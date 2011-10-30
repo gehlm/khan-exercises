@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html data-require="math graphie">
+	<head>
+	<meta charset="UTF-8" />
+	<title>Graphing points 2</title>
+		<script src="../khan-exercise.js"></script>
+	</head>
+	<body>
+		<div class="exercise">
+
+			<div class="vars" data-ensure="SOL_Y > -10 && SOL_Y < 10">
+				<var id="M">randRangeNonZero( -4, 4 )</var>
+				<var id="B">randRangeNonZero( -5, 5 )</var>
+				<var id="Y1">-M + B</var>
+				<var id="Y2">M + B</var>
+				<var id="SOL_X">randRange( -5, 5 )</var>
+				<var id="SOL_Y">( M * SOL_X ) + B</var>
+				<var id="SOLUTION" >[SOL_X, SOL_Y]</var>
+
+				<var id="POINTS">
+					(function() {
+						var points = [];
+
+						while( points.length &lt; 4 ) {
+							var point = [ randRange( -9, 9 ), randRangeExclude( -9, 9, [-1] ) ];
+							var isUnique = true;
+							jQuery.each( points, function( index, pt ) {
+								if ( point[1] === M * point[0] + B) {
+									isUnique = false;
+									return false;
+								}	
+								if ( point[0] === pt[0] && point[1] === pt[1] ) {
+									isUnique = false;
+									return false;
+								}
+							});
+							if ( isUnique ) {
+								points.unshift( point );
+							}
+						}
+						points.unshift( SOLUTION );					
+						return shuffle( points );
+					})()
+				</var>
+
+				<var id="ANSWER">
+					(function() {
+						return POINTS.indexOf( SOLUTION );
+					})()
+				</var>
+				<var id="PAIR">function( arr ) {
+					return "(" + arr.join( ", " ) + ")";
+				}</var>
+			</div>
+
+			<div class="problems">
+				<div>
+					<div class="problem">
+						<p>Consider the following coordinate pairs:</p>
+						<p><code><var>jQuery.map( POINTS, PAIR ).join( "\\qquad" )</var></code></p>
+					</div>
+
+					<div class="question">
+						<p>Which of those ordered pairs represents a solution to the equation <code>y = <var>M</var>x + <var>B</var></code>?</p>
+						<div class="graphie" id="grid">
+							graphInit({
+								range: 10,
+								scale: 20,
+								axisArrows: "<->",
+								tickStep: 1,
+								labelStep: 2
+							})
+
+							line( [-20, Y1 - 19 * M], [20, Y2 + 19 * M], {
+								stroke: "#88F"
+							} );
+				
+						</div>
+					</div>
+
+					<p class="solution"><code><var>PAIR( POINTS[ANSWER] )</var></code></p>
+					<ul class="choices" data-category="true">
+						<li><code><var>PAIR( POINTS[0] )</var></code></li>
+						<li><code><var>PAIR( POINTS[1] )</var></code></li>
+						<li><code><var>PAIR( POINTS[2] )</var></code></li>
+						<li><code><var>PAIR( POINTS[3] )</var></code></li>
+						<li><code><var>PAIR( POINTS[4] )</var></code></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="hints">
+				<div class="graphie" data-update="grid">		
+					jQuery.each( POINTS, function( index, point ) {
+						style({
+							stroke: "red",
+							fill: "red"
+						}, function() {
+							circle( point, 0.15 );
+						});
+					});
+				</div>
+				<div data-if="ANSWER !== 0" class="graphie" data-update="grid">
+					label( POINTS[0], PAIR( POINTS[0] ), "above right" );
+				</div>
+				<div data-if="ANSWER !== 1" class="graphie" data-update="grid">
+					label( POINTS[1], PAIR( POINTS[1] ), "above right" );
+				</div>
+				<div data-if="ANSWER !== 2" class="graphie" data-update="grid">
+					label( POINTS[2], PAIR( POINTS[2] ), "above right" );
+				</div>
+				<div data-if="ANSWER !== 3" class="graphie" data-update="grid">
+					label( POINTS[3], PAIR( POINTS[3] ), "above right" );
+				</div>
+				<div data-if="ANSWER !== 4" class="graphie" data-update="grid">
+					label( POINTS[4], PAIR( POINTS[4] ), "above right" );
+				</div>
+				<div><div class="graphie" data-update="grid">
+					var point = POINTS[ANSWER];
+					label( point, PAIR( point ) + "\\text{ is a solution.}", "above right" );
+					circle( point, 0.25, { stroke: "blue", fill: "red"} );
+				</div></div>
+			</div>
+
+		</div>
+	</body>
+</html>
